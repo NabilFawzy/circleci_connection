@@ -86,7 +86,27 @@ jobs:
           name: on error
           command: echo "Hello Error!"
           when: on_fail     
-
+  
+  build:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run lint
+  test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run test
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm audit
   
 # Orchestrate or schedule a set of jobs
 workflows:
@@ -101,6 +121,12 @@ workflows:
       - print_output_file:
          requires:
            - "save_hello_world_output"
-      - checkfails
-      
+
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
         
