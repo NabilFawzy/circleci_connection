@@ -3,15 +3,33 @@ version: 2.1
 # Use a package of configuration called an orb.
 orbs:
   # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.4.1
+   welcome: circleci/welcome-orb@0.4.1
+
+
+commands:
+  print_pipeline_id:
+      steps:
+        - run: echo ${CIRCLE_WORKFLOW_ID}
+  printsum:
+      parameters:
+       to:
+          type: string 
+          default: "hello"
+       first:
+         type: integer 
+         default: 0
+       second:
+         type: integer 
+         default: 0
+      steps: 
+        - run: echo ${to}
+
+defaults: &defaults
+      docker:
+      - image: circleci/node:13.8.0 
 jobs:
-  defaults: &defaults
-        docker:
-       - image: circleci/node:13.8.0 
   print_hello:
      <<: *defaults
-     docker:
-       - image: circleci/node:13.8.0 
      steps:
        - run: 
           echo "hello"
@@ -19,7 +37,7 @@ jobs:
         
       
   print_world:
-    <<: *defaults
+     <<: *defaults
      steps:
        - run:
           echo "World.."
@@ -47,6 +65,48 @@ jobs:
       - attach_workspace:
           at: ~/
       - run: cat ~/output.txt
+  print_pipeID:
+      <<: *defaults
+      steps:
+         - print_pipeline_id
+  
+  print_sum:
+      <<: *defaults
+      steps:
+        - printsum :
+           to : "hii nabil"
+           first : 5
+           second : 10
+          
+  checkfails:
+    <<: *defaults
+    steps:
+      - run: return 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail     
+  
+  build:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run lint
+  test:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm i
+      - run: npm run test
+  analyze:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - run: npm audit
   
 # Orchestrate or schedule a set of jobs
 workflows:
@@ -55,7 +115,18 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - welcome/run
+      - print_pipeID
+      - print_sum
       - save_hello_world_output
       - print_output_file:
          requires:
            - "save_hello_world_output"
+
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
+        
