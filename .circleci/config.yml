@@ -78,7 +78,14 @@ jobs:
            first : 5
            second : 10
           
-         
+  checkfails:
+    <<: *defaults
+    steps:
+      - run: return 1
+      - run:
+          name: on error
+          command: echo "Hello Error!"
+          when: on_fail     
 
   
 # Orchestrate or schedule a set of jobs
@@ -94,5 +101,6 @@ workflows:
       - print_output_file:
          requires:
            - "save_hello_world_output"
+      - checkfails
       
         
