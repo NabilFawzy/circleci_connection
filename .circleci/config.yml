@@ -22,7 +22,7 @@ commands:
          type: integer 
          default: 0
       steps: 
-        - run: echo ${$first+$second}
+        - run: echo ${to}
 
 defaults: &defaults
       docker:
