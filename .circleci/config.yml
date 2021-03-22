@@ -12,13 +12,16 @@ commands:
         - run: echo ${CIRCLE_WORKFLOW_ID}
   printsum:
       parameters:
-       first:
+       to:
           type: string 
           default: "hello"
+       first:
+         type: integer 
+         default: 0
        second:
-          type: string 
-          default: "nabil"
-      steps:
+         type: integer 
+         default: 0
+      steps: 
         - run: echo ${first+second}
 
 defaults: &defaults
@@ -70,10 +73,11 @@ jobs:
   print_sum:
       <<: *defaults
       steps:
-        - printsum:
-          - first : "nabil"
-          - second : "fawzy"
-
+        - printsum :
+           to : "hii nabil"
+           first : 5
+           second : 10
+          
          
 
   
@@ -83,9 +87,9 @@ workflows:
   welcome:
     # Run the welcome/run job in its own container
     jobs:
+      - welcome/run
       - print_pipeID
       - print_sum
-      - welcome/run
       - save_hello_world_output
       - print_output_file:
          requires:
