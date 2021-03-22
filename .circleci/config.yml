@@ -13,11 +13,11 @@ commands:
   printsum:
       parameters:
        first:
-          type: integer 
-          default: 0
+          type: string 
+          default: "hello"
        second:
-          type: integer 
-          default: 0
+          type: string 
+          default: "nabil"
       steps:
         - run: echo ${first+second}
 
@@ -70,8 +70,10 @@ jobs:
   print_sum:
       <<: *defaults
       steps:
-        - print_pipeline_id
-        - printsum
+        - printsum:
+          - first : "nabil"
+          - second : "fawzy"
+
          
 
   
@@ -82,6 +84,7 @@ workflows:
     # Run the welcome/run job in its own container
     jobs:
       - print_pipeID
+      - print_sum
       - welcome/run
       - save_hello_world_output
       - print_output_file:
