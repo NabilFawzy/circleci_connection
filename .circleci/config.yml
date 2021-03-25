@@ -32,13 +32,16 @@ jobs:
   smokeTestGoogle:
      <<: *defaults
      steps:
-      -run:
-       echo "if curl -s --head "https://google.com" 
-          then
-            echo "It worked!"
-          else
-            echo "It failed"
-          fi"
+      - run: apk add --update curl
+      - run:
+          name: smoke test.
+          command: |
+            if curl -s --head "https://google.com" 
+                then
+                  echo "It worked!"
+            else
+                  echo "It failed"
+            fi
 
   print_hello:
      <<: *defaults
