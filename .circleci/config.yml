@@ -32,15 +32,16 @@ jobs:
   smokeTestGoogle:
      <<: *defaults
      steps:
-      - run: apk add --update curl
+      docker:
+        - image: alpine:latest
       - run:
           name: smoke test.
           command: |
             if curl -s --head "https://google.com" 
                 then
-                  echo "It worked!"
+                  return 1
             else
-                  echo "It failed"
+                  return 0
             fi
 
   print_hello:
