@@ -30,11 +30,11 @@ defaults: &defaults
 jobs:
   
   smokeTestGoogle:
-     <<: *defaults
-     steps:
       docker:
         - image: alpine:latest
-      - run:
+      steps:
+        - run: apk add --update curl
+        - run:     
           name: smoke test.
           command: |
             if curl -s --head "https://google.com" 
