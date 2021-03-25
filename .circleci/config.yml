@@ -28,8 +28,8 @@ defaults: &defaults
       docker:
       - image: circleci/node:13.8.0 
 jobs:
-  
-  smoke_test:
+
+  smokeTestGoogle:
       docker:
         - image: alpine:latest
       steps:
