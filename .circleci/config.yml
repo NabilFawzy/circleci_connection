@@ -28,6 +28,18 @@ defaults: &defaults
       docker:
       - image: circleci/node:13.8.0 
 jobs:
+  
+  smokeTestGoogle:
+     <<: *defaults
+     steps:
+      -run:
+       echo "if curl -s --head "https://google.com" 
+          then
+            echo "It worked!"
+          else
+            echo "It failed"
+          fi"
+
   print_hello:
      <<: *defaults
      steps:
@@ -117,6 +129,7 @@ workflows:
       - welcome/run
       - print_pipeID
       - print_sum
+      - smokeTestGoogle
       - save_hello_world_output
       - print_output_file:
          requires:
